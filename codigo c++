@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+int main() {
+    char poltrona; // Para armazenar a letra da poltrona
+    int col, lin, fileira; // Variáveis para colunas, linhas e fileiras
+    char tipo_passagem; // Para armazenar o tipo de passagem
+    bool reservas[10][7] = {0}; // Ajustado para 7 colunas (F a L)
+
+    while (true) {
+        // Solicita o tipo de passagem ao usuário
+        printf("Digite o tipo de passagem (E - Econômico, X - Executivo): ");
+        scanf(" %c", &tipo_passagem);
+
+        // Valida o tipo de passagem
+        if (tipo_passagem != 'E' && tipo_passagem != 'e' && tipo_passagem != 'X' && tipo_passagem != 'x') {
+            printf("Tipo de passagem inválido. Tente novamente.\n");
+            continue; // Pede nova entrada se o tipo de passagem for inválido
+        }
+
+        // Solicita a fileira ao usuário
+        printf("Digite a fileira (1 a 10): ");
+        scanf("%d", &fileira);
+
+        // Valida a fileira
+        if (fileira < 1 || fileira > 10) {
+            printf("Fileira inválida. Tente novamente.\n");
+            continue; // Pede nova entrada se a fileira for inválida
+        }
+
+        // Solicita a poltrona ao usuário
+        printf("Digite a poltrona (F-L): ");
+        scanf(" %c", &poltrona);
+
+        // Define a coluna com base na letra da poltrona
+        switch (poltrona) {
+            case 'F': case 'f': col = 0; break;
+            case 'G': case 'g': col = 1; break;
+            case 'H': case 'h': col = 2; break;
+            case 'I': case 'i': col = 3; break;
+            case 'J': case 'j': col = 4; break;
+            case 'K': case 'k': col = 5; break;
+            case 'L': case 'l': col = 6; break;
+            default:
+                printf("Poltrona inválida. Tente novamente.\n");
+                continue; // Verificação
+        }
+
+        lin = fileira - 1; // Ajusta o índice para zero baseado
+
+        // Verifica se o tipo de passagem é Econômico e não permite reservar F e L
+        if (tipo_passagem == 'E' || tipo_passagem == 'e') {
+            if (col == 0 || col == 6) {
+                printf("Assentos nas poltronas F e L não estão disponíveis para passagem Econômica.\n");
+                continue; // Verificação
+            }
+        }
+
+        // Verifica se o assento já está reservado
+        if (reservas[lin][col]) {
+            printf("Esse assento já está reservado. Por favor, escolha outro.\n");
+            continue; // Pede nova entrada se o assento já estiver reservado
+        }
+
+        // Sugestão de poltronas F e L para Executivo
+        if ((tipo_passagem == 'X' || tipo_passagem == 'x') && (col != 0 && col != 6)) {
+            printf("Recomendamos as poltronas F e L para sua reserva.\n");
+        }
+
+        // Reserva o assento
+        reservas[lin][col] = true;
+
+        // Imprimir na tela as poltronas
+        printf("\n\t\t\t\tF G H I J K L\n");
+        for (int l = 0; l < 10; l++) {
+            printf("\t\t\t%d\t", l + 1); 
+            for (int c = 0; c < 7; c++) { // Ajustado para 7 colunas
+                // Imprime [X] se reservado, [ ] se livre
+                printf(reservas[l][c] ? "[X] " : "[ ] ");
+            }
+            printf("\n"); 
+        }
+
+        // Pergunta se deseja realizar outra reserva
+        char continuar;
+        printf("Deseja realizar outra reserva? (s/n): ");
+        scanf(" %c", &continuar);
+
+        if (continuar == 'n' || continuar == 'N') {
+            printf("Encerrando o sistema de reservas...\n");
+            break; // Encerra o loop
+        }
+    }
+
+    return 0; 
+}
